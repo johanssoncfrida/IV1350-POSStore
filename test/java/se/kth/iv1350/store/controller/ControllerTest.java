@@ -6,6 +6,7 @@
 package se.kth.iv1350.store.controller;
 
 
+import java.util.HashMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import se.kth.iv1350.store.Util.Amount;
 import se.kth.iv1350.store.intergration.ExternalDbHandler;
 import se.kth.iv1350.store.intergration.FailedToConnectWithDatabaseException;
 import se.kth.iv1350.store.intergration.FailedToFindItemException;
+import se.kth.iv1350.store.intergration.InventorySystem;
 import se.kth.iv1350.store.intergration.Item;
 import se.kth.iv1350.store.intergration.ItemDTO;
 import se.kth.iv1350.store.intergration.Printer;
@@ -49,10 +51,47 @@ public class ControllerTest {
         
         
     }
+    
+    @Test
+    public void testAddItemToBasketThatDoNotExist() throws OperationFailedException, FailedToFindItemException, FailedToConnectWithDatabaseException {
+        
+        ItemDTO itemData = new ItemDTO(new Amount(699.0), "Jeans", new Amount(Math.round(699.0*0.12)));
+        Item NotExistableItem = new Item(itemData, "Jeans", new Amount(1.0));
+        sale = new Sale();
+        try{
+            Item item = creator.getInventorySystem().getItem(NotExistableItem.getName(), NotExistableItem.getQuantity());
+            fail("could not add specified item");
+        }
+        catch(FailedToFindItemException | FailedToConnectWithDatabaseException exc){
+            assertFalse(exc.getMessage().contains(NotExistableItem.toString()), "Wrong, sale does contain item. ");
+        }
+        
+        
+    }
+    
+    @Test
+    public void testAddItemToBasketWhenDatabaseIsNull() throws FailedToConnectWithDatabaseException, FailedToFindItemException {
+        
+        InventorySystem inventory = null;
+        ItemDTO itemData = new ItemDTO(new Amount(299.0), "TShirt", new Amount(Math.round(299.0*0.12)));
+        Item item = new Item(itemData, "TShirt", new Amount(1.0));
+        
+        try{
+            Item failItem = creator.getInventorySystem().getItem(item.getName(), item.getQuantity());
+            fail("Could not connect with the inventory");
+        }
+        catch(FailedToConnectWithDatabaseException | FailedToFindItemException exc){
+            assertTrue(!exc.getMessage().contains(item.toString()), "Does contain the specified item" + exc.getMessage());
+        }
+        
+        
+        
+        
+    }
  
   
     @Test
-    public void testAddItemToBasket() throws OperationFailedException, FailedToFindItemException, FailedToConnectWithDatabaseException {
+    public void testAddItemToBasket()  {
         
         ItemDTO itemData = new ItemDTO(new Amount(299.0), "Tshirt", new Amount(Math.round(299.0*0.12)));
         Item item = new Item(itemData, "Tshirt", new Amount(1.0));
