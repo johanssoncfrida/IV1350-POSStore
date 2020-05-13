@@ -43,8 +43,8 @@ public class View {
     /**
      *  Represents a sample sale.
      *  
-     * @throws FailedToConnectWithDatabaseException
-     * @throws OperationFailedException
+     * @throws FailedToConnectWithDatabaseException if system can't connect with inventory.
+     * @throws OperationFailedException if not able to add items.
      */
     public void sampleSale() throws FailedToConnectWithDatabaseException, OperationFailedException{
         System.out.println("Start new sale.\n");

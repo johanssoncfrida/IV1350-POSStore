@@ -99,8 +99,8 @@ public class InventorySystem {
      *
      * @param name scanned item.
      * @return true if item exists, otherwise false.
-     * @throws FailedToConnectWithDatabaseException if database is null
-     * @throws se.kth.iv1350.store.intergration.FailedToFindItemException
+     * @throws FailedToConnectWithDatabaseException if database is null.
+     * @throws FailedToFindItemException if the item is not found in system.
      */
     public boolean itemExists(String name) throws FailedToConnectWithDatabaseException, FailedToFindItemException {
         if(!stock.containsKey(name)){
